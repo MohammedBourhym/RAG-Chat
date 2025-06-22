@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # Spring Boot backend service
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - CHROMADB_URL=http://chromadb:8000
+      - CHROMADB_COLLECTION=edun7-collection
+    volumes:
+      - upload-data:/app/uploads
+    depends_on:
+      - chromadb
+    networks:
+      - edun7-network
+
+  # React frontend service
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - server
+    networks:
+      - edun7-network
+
+  # ChromaDB vector database
+  chromadb:
+    image: chromadb/chroma:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma-data:/chroma/chroma
+    networks:
+      - edun7-network
+
+networks:
+  edun7-network:
+    driver: bridge
+
+volumes:
+  chroma-data:
+  upload-data:
