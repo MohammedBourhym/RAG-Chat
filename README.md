@@ -2,11 +2,13 @@
 
 EduN7 is an advanced Retrieval-Augmented Generation (RAG) chatbot designed to provide precise and contextual responses based on user-provided documents. This application combines modern frontend technologies with a robust backend to deliver an intuitive and powerful document-based question-answering system.
 
+![EduN7 Chatbot Screenshot](image.png)
+
 ## Features
 
 - **Document Upload and Management**: Easily upload and manage PDF documents
-- **Retrieval-Augmented Generation**: Uses ChromaDB vector database and Groq LLM to provide accurate, contextual responses
-- **Modern UI**: Responsive React-based interface for a seamless user experience
+- **Retrieval-Augmented Generation**: Uses Elasticsearch vector database and Groq LLM to provide accurate, contextual responses
+- **Modern UI**: Responsive React-based interface with Tailwind CSS styling and dark/light mode
 - **Containerized Architecture**: Docker-based deployment for easy setup and scalability
 - **RESTful API**: Well-structured Spring Boot backend
 
@@ -16,14 +18,15 @@ EduN7 is an advanced Retrieval-Augmented Generation (RAG) chatbot designed to pr
 - Java 17
 - Spring Boot
 - LangChain4j for document processing and embedding generation
-- ChromaDB for vector storage
+- Elasticsearch for vector storage
 - Groq API for LLM integration
 
 ### Frontend
 - React 18
-- Material UI for component styling
+- Tailwind CSS for styling
 - Axios for API communication
 - React Markdown for rendering formatted responses
+- Dark/Light mode support
 
 ### Infrastructure
 - Docker for containerization
@@ -33,17 +36,17 @@ EduN7 is an advanced Retrieval-Augmented Generation (RAG) chatbot designed to pr
 
 ### Prerequisites
 - Docker and Docker Compose
-- Groq API key
+- Groq API key (optional - a default key is provided for testing)
 
 ### Setup and Installation
 
 1. **Clone the repository**
    ```bash
    git clone https://github.com/yourusername/EduN7_ChatBot.git
-   cd EduN7_ChatBot
+   cd EduN7_ChatBot/new-structure
    ```
 
-2. **Set environment variables**
+2. **Set environment variables (optional)**
    ```bash
    export GROQ_API_KEY="your-groq-api-key"
    ```
@@ -54,15 +57,33 @@ EduN7 is an advanced Retrieval-Augmented Generation (RAG) chatbot designed to pr
    ```
 
 4. **Access the application**
-   - Frontend: http://localhost:3000
+   - Frontend: http://localhost:3002
    - Backend API: http://localhost:8080/api
-   - ChromaDB: http://localhost:8000
+   - Elasticsearch: http://localhost:9200
 
 ## Usage
 
 1. **Upload Documents**: Use the upload area to add PDF documents to the system
-2. **Ask Questions**: Type questions in the chat interface
+2. **Ask Questions**: Type questions in the chat interface or use suggested prompts
 3. **Get AI Responses**: Receive contextual answers based on the content of your uploaded documents
+4. **Toggle Theme**: Switch between dark and light modes with the theme toggle in the header
+
+## Image Interface
+
+The EduN7 Chatbot features a modern, clean interface with the following components:
+
+1. **Header**: Navigation bar with app title and theme toggle (dark/light mode)
+2. **Document Upload**: Card-based interface for uploading PDF documents
+3. **Document List**: Grid view of uploaded documents with delete option
+4. **Chat Interface**: Modern chat UI with:
+   - Message history showing user questions and AI responses
+   - Markdown formatting for AI responses
+   - Copy-to-clipboard functionality for responses
+   - Typing indicator during AI response generation
+   - Suggested prompts for common questions
+   - Input field with send button
+
+The UI is fully responsive and adapts to different screen sizes, making it accessible on desktop and mobile devices. The dark/light mode themes provide comfortable viewing options for different environments.
 
 ## Project Structure
 
@@ -70,6 +91,7 @@ EduN7 is an advanced Retrieval-Augmented Generation (RAG) chatbot designed to pr
 ├── client/                  # React frontend
 │   ├── src/
 │   │   ├── components/      # UI components
+│   │   ├── contexts/        # Context providers (Theme)
 │   │   ├── services/        # API services
 │   │   └── App.js           # Main application
 │   ├── Dockerfile           # Client Docker configuration
