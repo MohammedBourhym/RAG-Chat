@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "app.chromadb")
-public class ChromaDbConfig {
+@ConfigurationProperties(prefix = "app.elasticsearch")
+public class ElasticsearchConfig {
     private String url;
-    private String collectionName;
+    private String index;
 }

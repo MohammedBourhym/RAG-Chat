@@ -29,24 +29,31 @@ public class DocumentController {
         Map<String, Object> response = new HashMap<>();
         
         try {
+            log.info("Received file upload request: {}, size: {}, type: {}", 
+                    file.getOriginalFilename(), file.getSize(), file.getContentType());
+            
             if (file.isEmpty()) {
+                log.warn("Empty file received");
                 response.put("success", false);
                 response.put("message", "Please select a file to upload");
                 return ResponseEntity.badRequest().body(response);
             }
             
             // Check if file is a PDF
-            if (!file.getContentType().equals("application/pdf")) {
+            if (!"application/pdf".equals(file.getContentType())) {
+                log.warn("Non-PDF file received: {}", file.getContentType());
                 response.put("success", false);
-                response.put("message", "Only PDF files are supported");
+                response.put("message", "Only PDF files are supported. Received: " + file.getContentType());
                 return ResponseEntity.badRequest().body(response);
             }
             
             // Process and store the document
             DocumentInfo documentInfo = documentService.processDocument(file);
+            log.info("Document processed with ID: {}", documentInfo.getId());
             
             // Index the document for RAG
             ragService.processAndIndexDocument(documentInfo.getId());
+            log.info("Document indexed successfully");
             
             response.put("success", true);
             response.put("message", "Document uploaded and indexed successfully");
@@ -58,7 +65,12 @@ public class DocumentController {
             log.error("Error uploading document", e);
             response.put("success", false);
             response.put("message", "Failed to upload document: " + e.getMessage());
-            return ResponseEntity.internalServerError().body(response);
+            return ResponseEntity.status(500).body(response);
+        } catch (Exception e) {
+            log.error("Unexpected error during document upload", e);
+            response.put("success", false);
+            response.put("message", "Unexpected error: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
         }
     }
     
