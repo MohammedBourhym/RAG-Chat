@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { List, ListItem, ListItemText, ListItemIcon, ListItemSecondaryAction, IconButton, Typography, Divider, Box, Alert } from '@mui/material';
-import DescriptionIcon from '@mui/icons-material/Description';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { DocumentTextIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { getDocuments, deleteDocument } from '../services/api';
 
-const DocumentList = ({ documents, setDocuments, refreshTrigger, onDocumentDeleted }) => {
+const DocumentList = ({ documents, setDocuments, refreshTrigger, onDocumentDeleted, compact = false }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -39,42 +37,71 @@ const DocumentList = ({ documents, setDocuments, refreshTrigger, onDocumentDelet
   };
 
   if (loading && documents.length === 0) {
-    return <Typography>Loading documents...</Typography>;
+    return (
+      <div className="flex justify-center items-center h-24">
+        <div className="animate-pulse flex space-x-2">
+          <div className="w-2 h-2 bg-primary-500 rounded-full"></div>
+          <div className="w-2 h-2 bg-primary-500 rounded-full"></div>
+          <div className="w-2 h-2 bg-primary-500 rounded-full"></div>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
-    return <Alert severity="error">{error}</Alert>;
+    return (
+      <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4 rounded">
+        <p className="text-red-700 dark:text-red-400">{error}</p>
+      </div>
+    );
   }
 
   if (documents.length === 0) {
-    return <Typography>No documents uploaded yet</Typography>;
+    return (
+      <div className="text-center py-6">
+        <DocumentTextIcon className="h-12 w-12 mx-auto text-secondary-400 dark:text-secondary-600 mb-2" />
+        <p className="text-secondary-600 dark:text-secondary-400">No documents uploaded yet</p>
+      </div>
+    );
   }
 
   return (
-    <Box>
-      <Typography variant="h6" gutterBottom>
-        Uploaded Documents
-      </Typography>
-      <Divider sx={{ mb: 2 }} />
-      <List>
+    <div>
+      {!compact && (
+        <h2 className="text-xl font-semibold text-secondary-900 dark:text-white mb-4">
+          Uploaded Documents
+        </h2>
+      )}
+      
+      <div className="divide-y divide-gray-200 dark:divide-secondary-700">
         {documents.map((doc) => (
-          <ListItem key={doc.id}>
-            <ListItemIcon>
-              <DescriptionIcon />
-            </ListItemIcon>
-            <ListItemText 
-              primary={doc.name}
-              secondary={`Uploaded: ${new Date(doc.uploadDate).toLocaleString()}`}
-            />
-            <ListItemSecondaryAction>
-              <IconButton edge="end" onClick={() => handleDelete(doc.id)}>
-                <DeleteIcon />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
+          <div 
+            key={doc.id} 
+            className="py-3 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-secondary-800/50 rounded-lg px-2"
+          >
+            <div className="flex items-center">
+              <DocumentTextIcon className="h-5 w-5 text-primary-500 mr-3 flex-shrink-0" />
+              <div>
+                <p className={`text-secondary-900 dark:text-white ${compact ? 'text-sm' : 'font-medium'}`}>
+                  {doc.name}
+                </p>
+                <p className="text-xs text-secondary-500 dark:text-secondary-400">
+                  {new Date(doc.uploadDate).toLocaleString()}
+                </p>
+              </div>
+            </div>
+            
+            <button 
+              onClick={() => handleDelete(doc.id)}
+              className="text-secondary-400 hover:text-red-500 dark:text-secondary-500 dark:hover:text-red-400 transition-colors p-1 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20"
+              title="Delete document"
+            >
+              <TrashIcon className="h-4 w-4" />
+            </button>
+          </div>
         ))}
-      </List>
-    </Box>
+      </div>
+    </div>
   );
 };
 

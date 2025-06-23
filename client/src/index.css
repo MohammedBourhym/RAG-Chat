@@ -1,14 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  @apply bg-gray-50 dark:bg-secondary-800 text-secondary-800 dark:text-gray-100;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f5f5f5;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-secondary-700 rounded;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-secondary-600 rounded hover:bg-gray-400 dark:hover:bg-secondary-500 transition-colors;
+}
+
+/* Animation */
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Custom classes */
+.card {
+  @apply bg-white dark:bg-secondary-700 rounded-xl shadow-soft p-5 hover:shadow-md transition-shadow;
+}
+
+.button-primary {
+  @apply bg-primary-500 hover:bg-primary-600 text-white py-2 px-4 rounded-lg transition-colors shadow-sm;
+}
+
+.button-secondary {
+  @apply bg-white dark:bg-secondary-700 hover:bg-gray-100 dark:hover:bg-secondary-600 text-secondary-800 dark:text-white border border-gray-200 dark:border-secondary-600 py-2 px-4 rounded-lg transition-colors shadow-sm;
+}
+
+.input-field {
+  @apply bg-white dark:bg-secondary-700 border border-gray-200 dark:border-secondary-600 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 dark:text-white;
+}
+
+/* Enhanced prose and code blocks */
+.prose pre {
+  @apply rounded-lg p-3 bg-secondary-50 dark:bg-secondary-800/70 border border-secondary-200 dark:border-secondary-700 my-3;
+}
+
+.prose code {
+  @apply px-1.5 py-0.5 rounded bg-secondary-50 dark:bg-secondary-800/70 text-secondary-800 dark:text-secondary-200 font-mono text-sm;
+}
+
+.prose pre code {
+  @apply bg-transparent p-0 rounded-none text-secondary-800 dark:text-secondary-200;
+}
+
+.prose table {
+  @apply border-collapse w-full;
+}
+
+.prose th {
+  @apply bg-secondary-50 dark:bg-secondary-800 p-2 text-left border border-secondary-200 dark:border-secondary-700;
+}
+
+.prose td {
+  @apply p-2 border border-secondary-200 dark:border-secondary-700;
+}
+
+.prose blockquote {
+  @apply border-l-4 border-primary-300 dark:border-primary-700 pl-4 italic text-secondary-600 dark:text-secondary-400;
+}
+
+.prose ul {
+  @apply list-disc pl-5;
+}
+
+.prose ol {
+  @apply list-decimal pl-5;
+}
+
+/* Chat typing animation */
+@keyframes bounce-delay {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1.0); }
+}
+
+.typing-dot {
+  animation: bounce-delay 1.4s infinite ease-in-out both;
+}
+
+.typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-dot:nth-child(2) { animation-delay: -0.16s; }
+.typing-dot:nth-child(3) { animation-delay: 0s; }

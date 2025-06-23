@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Button, Typography, LinearProgress, Alert } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
+import { DocumentArrowUpIcon } from '@heroicons/react/24/outline';
 import { uploadDocument } from '../services/api';
 
 const DocumentUpload = ({ onDocumentUploaded }) => {
@@ -45,49 +44,50 @@ const DocumentUpload = ({ onDocumentUploaded }) => {
   });
 
   return (
-    <Box>
-      <Typography variant="h6" gutterBottom>
+    <div>
+      <h2 className="text-xl font-semibold text-secondary-900 dark:text-white mb-4">
         Upload Documents
-      </Typography>
+      </h2>
       
-      <Box
+      <div
         {...getRootProps()}
-        sx={{
-          border: '2px dashed #cccccc',
-          borderRadius: 2,
-          p: 3,
-          textAlign: 'center',
-          cursor: 'pointer',
-          backgroundColor: isDragActive ? '#f0f8ff' : 'transparent',
-          mb: 2
-        }}
+        className={`
+          border-2 border-dashed border-gray-300 dark:border-secondary-600 
+          rounded-xl p-8 text-center cursor-pointer transition-colors
+          ${isDragActive ? 'bg-primary-50 dark:bg-secondary-700/50' : 'hover:bg-gray-50 dark:hover:bg-secondary-700/30'} 
+          mb-4
+        `}
       >
         <input {...getInputProps()} />
-        <UploadFileIcon sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
-        <Typography>
+        <DocumentArrowUpIcon className="h-12 w-12 mx-auto text-primary-500 mb-3" />
+        <p className="text-secondary-700 dark:text-gray-300 mb-1">
           {isDragActive
             ? 'Drop the PDF file here'
             : 'Drag and drop a PDF file here, or click to select a file'}
-        </Typography>
-        <Typography variant="caption" color="textSecondary">
+        </p>
+        <p className="text-xs text-secondary-500 dark:text-gray-400">
           Only PDF files are accepted
-        </Typography>
-      </Box>
+        </p>
+      </div>
 
-      {uploading && <LinearProgress sx={{ mt: 2, mb: 2 }} />}
+      {uploading && (
+        <div className="w-full h-2 bg-gray-200 dark:bg-secondary-700 rounded-full overflow-hidden mb-4">
+          <div className="h-full bg-primary-500 animate-pulse rounded-full"></div>
+        </div>
+      )}
       
       {error && (
-        <Alert severity="error" sx={{ mt: 2 }}>
-          {error}
-        </Alert>
+        <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4 mb-4 rounded">
+          <p className="text-red-700 dark:text-red-400">{error}</p>
+        </div>
       )}
       
       {success && (
-        <Alert severity="success" sx={{ mt: 2 }}>
-          {success}
-        </Alert>
+        <div className="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 p-4 mb-4 rounded">
+          <p className="text-green-700 dark:text-green-400">{success}</p>
+        </div>
       )}
-    </Box>
+    </div>
   );
 };
 
