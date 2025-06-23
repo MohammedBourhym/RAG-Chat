@@ -1,6 +1,26 @@
 version: '3.8'
 
 services:
+  # Elasticsearch vector database
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - edun7-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health?pretty"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
   # Spring Boot backend service
   server:
     build:
@@ -10,14 +30,16 @@ services:
       - "8080:8080"
     environment:
       - GROQ_API_KEY=${GROQ_API_KEY}
-      - CHROMADB_URL=http://chromadb:8000
-      - CHROMADB_COLLECTION=edun7-collection
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ELASTICSEARCH_INDEX=edun7-documents
+      - SPRING_PROFILES_ACTIVE=docker
     volumes:
       - upload-data:/app/uploads
     depends_on:
-      - chromadb
+      - elasticsearch
     networks:
       - edun7-network
+    restart: on-failure:3
 
   # React frontend service
   client:
@@ -25,19 +47,9 @@ services:
       context: ./client
       dockerfile: Dockerfile
     ports:
-      - "3000:80"
+      - "3002:80"
     depends_on:
       - server
-    networks:
-      - edun7-network
-
-  # ChromaDB vector database
-  chromadb:
-    image: chromadb/chroma:latest
-    ports:
-      - "8000:8000"
-    volumes:
-      - chroma-data:/chroma/chroma
     networks:
       - edun7-network
 
@@ -46,5 +58,5 @@ networks:
     driver: bridge
 
 volumes:
-  chroma-data:
+  elasticsearch-data:
   upload-data:

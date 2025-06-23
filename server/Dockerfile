@@ -2,33 +2,32 @@ FROM maven:3.8-openjdk-17 AS build
 
 WORKDIR /app
 
-# Copy the POM file
-COPY pom.xml .
-
-# Download all required dependencies
-RUN mvn dependency:go-offline -B
-
-# Copy source code
-COPY src ./src
+# Copy all source code
+COPY . .
 
 # Build the application
 RUN mvn package -DskipTests
 
 # Create runtime image
-FROM openjdk:17-slim
+FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
+
+# Install curl for health checks
+RUN apk --no-cache add curl
 
 # Copy the built JAR file
 COPY --from=build /app/target/*.jar app.jar
 
+# Create and set permissions for uploads directory
+RUN mkdir -p /app/uploads && chmod 777 /app/uploads
+
 # Environment variables
-ENV GROQ_API_KEY=""
-ENV CHROMADB_URL="http://chromadb:8000"
-ENV CHROMADB_COLLECTION="edun7-collection"
+ENV SPRING_PROFILES_ACTIVE="docker"
+ENV JAVA_OPTS="-Xmx512m"
 
 # Expose port
 EXPOSE 8080
 
 # Run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+CMD ["java", "-jar", "app.jar"]
